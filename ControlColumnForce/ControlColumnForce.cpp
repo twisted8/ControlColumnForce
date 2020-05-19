@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <iostream>
-#include "SerialPort.hpp"	// Library described above
+#include "SerialPort.hpp"
 
 
 #define MAX_LOADSTRING 100
@@ -163,7 +163,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             SerialPort* arduino = new SerialPort(portName);
 
 
-            TCHAR greeting[] = _T("Hello, Windows desktop!");
+            TCHAR greeting[] = _T("Connected to Arduino");
             const char* sendString = "50";
 
             if (arduino->isConnected())

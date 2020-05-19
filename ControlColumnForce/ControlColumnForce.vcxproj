@@ -150,13 +150,11 @@
     <ClInclude Include="ControlColumnForce.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="SerialClass.h" />
     <ClInclude Include="SerialPort.hpp" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ControlColumnForce.cpp" />
-    <ClCompile Include="Serial.cpp" />
     <ClCompile Include="SerialPort.cpp" />
   </ItemGroup>
   <ItemGroup>
