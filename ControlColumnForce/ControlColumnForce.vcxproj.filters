@@ -30,6 +30,9 @@
     <ClInclude Include="SerialPort.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SimConnect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ControlColumnForce.cpp">

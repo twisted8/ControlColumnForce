@@ -9,12 +9,14 @@
 #include <tchar.h>
 #include <iostream>
 #include "SerialPort.hpp"
-
+#include "SimConnect.h"
+#include <strsafe.h>
 
 #define MAX_LOADSTRING 100
 #define DATA_LENGTH 255
 const char* portName = "COM3";
-
+int     quit = 0;
+HANDLE  hSimConnect = NULL;
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -157,6 +159,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
 
+
+            if (SUCCEEDED(SimConnect_Open(&hSimConnect, "Request Data", NULL, 0, 0, 0)))
+            {
+                printf("\nConnected to Prepar3D!");
+
+                TextOut(hdc,
+                    25, 25,
+                    _T("CONNECTED Prepar3D"), _tcslen(_T("CONNECTED Prepar3D")));
+            }
 
             printf("Welcome to the serial test app!\n\n");
 
