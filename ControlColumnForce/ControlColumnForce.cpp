@@ -175,7 +175,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
             TCHAR greeting[] = _T("Connected to Arduino");
-            const char* sendString = "50";
+            const char* sendString = "20";
 
             if (arduino->isConnected())
             {
