@@ -3,8 +3,15 @@
 //
 // Make a single stepper bounce from one limit 8o another
 //
-// Copyright (C) 2012 Mike McCauley
-// $Id: Random.pde,v 1.1 2011/01/05 01:51:01 mikem Exp mikem $
+
+
+//Take 12-24 volt power supply and wire + in to pin 9 on driver
+//Ground to pin 6 to turn on motor.
+//You can put extra 1 switch or industrial push button on off.For turning on off servo motor if you wish
+
+//ground wire from arduino in to pin 14 and pin 5 of driver
+//Pulse pin from arduino to pin 3 of driver
+//Direction pin from arduino in to pin 4 of driver.
 
 #include <AccelStepper.h>
 
@@ -17,9 +24,9 @@ AccelStepper stepper(1, driverPUL, driverDIR); // Defaults to AccelStepper::FULL
 void setup()
 {  
   // Change these to suit your stepper if you want
-  stepper.setMaxSpeed(1600);
-  stepper.setAcceleration(1200);
-  stepper.moveTo(2600);
+  stepper.setMaxSpeed(1200);
+  stepper.setAcceleration(10000);
+  stepper.moveTo(1600);
   
 }
 
