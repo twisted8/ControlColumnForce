@@ -127,8 +127,9 @@ void CALLBACK MyDispatchProcPDR(SIMCONNECT_RECV* pData, DWORD cbData, void* pCon
 
                 // Make the call for data every second, but only when it changes and
                 // only that data that has changed
+                // SIMCONNECT_PERIOD_SIM_FRAME
                 hr = SimConnect_RequestDataOnSimObject(hSimConnect, REQUEST_PDR, DEFINITION_PDR,
-                    SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_SIM_FRAME,
+                    SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_SECOND,
                     SIMCONNECT_DATA_REQUEST_FLAG_CHANGED | SIMCONNECT_DATA_REQUEST_FLAG_TAGGED);
 
                 break;
@@ -154,7 +155,8 @@ void CALLBACK MyDispatchProcPDR(SIMCONNECT_RECV* pData, DWORD cbData, void* pCon
                 // in the StructDatum structure. The actual number returned will
                 // be held in the dwDefineCount parameter.
 
-                const char* sendString = "0";
+                float sendString = 0;
+                char msgs[100];
                 std::string line = "";
 
                 /*line = "--> Checking data";
@@ -170,17 +172,19 @@ void CALLBACK MyDispatchProcPDR(SIMCONNECT_RECV* pData, DWORD cbData, void* pCon
                         break;
 
                     case DATA_YOKE_Y_POSITION:
-                        sendString = pS->datum[count].value > 0 ? "300" : "50";
-                        line = "\nYoke Y pos = " + (std::to_string(pS->datum[count].value)) + " | ss: " + sendString;
-                        OutputDebugStringA(line.c_str());
+                      //  sendString = pS->datum[count].value > 0 ? "300" : "50";
+                       // line = "\nYoke Y pos = " + (std::to_string(pS->datum[count].value)) + " | ss: " + sendString;
+                        //OutputDebugStringA(line.c_str());
                         // arduino->writeSerialPort(sendString, DATA_LENGTH);
                         break;
 
                     case DATA_YOKE_X_POSITION:
-                        sendString = pS->datum[count].value > 0 ? "300" : "50";
-                        line = "\nYoke X pos = " + (std::to_string(pS->datum[count].value)) + " | ss: " + sendString;
+                        sendString = pS->datum[count].value * 10000;
+                        sprintf_s(msgs, "%f", sendString);
+
+                        line = "\nYoke X pos = " + (std::to_string(pS->datum[count].value)) +" / " + msgs;
                         OutputDebugStringA(line.c_str());
-                        arduino->writeSerialPort(sendString, DATA_LENGTH);
+                        arduino->writeSerialPort(msgs, DATA_LENGTH);
                         break;
 
                     case DATA_VERTICAL_SPEED:
