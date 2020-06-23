@@ -129,7 +129,7 @@ void CALLBACK MyDispatchProcPDR(SIMCONNECT_RECV* pData, DWORD cbData, void* pCon
                 // only that data that has changed
                 // SIMCONNECT_PERIOD_SIM_FRAME
                 hr = SimConnect_RequestDataOnSimObject(hSimConnect, REQUEST_PDR, DEFINITION_PDR,
-                    SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_SECOND,
+                    SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_SIM_FRAME,
                     SIMCONNECT_DATA_REQUEST_FLAG_CHANGED | SIMCONNECT_DATA_REQUEST_FLAG_TAGGED);
 
                 break;
@@ -180,23 +180,12 @@ void CALLBACK MyDispatchProcPDR(SIMCONNECT_RECV* pData, DWORD cbData, void* pCon
                         break;
 
                     case DATA_YOKE_X_POSITION:
-                        simVal = pS->datum[count].value * 1000;
-                      /*  int i;
-                        i = (rand() % 600) + 1;*/
-                        
+                        simVal = pS->datum[count].value * 800;                        
                         valueFormatted = "<X_POS, 12, " + std::to_string(simVal) + ">";
-                      //  printf_s(msgs, "%f", valueformatted);
-
                         line = "\nYoke X pos = " + (std::to_string(pS->datum[count].value)) + " " + valueFormatted;
                         OutputDebugStringA(line.c_str());
                         
-                        arduino->writeSerialPort(_strdup(valueFormatted.c_str()), DATA_LENGTH);
-
-            /*           sprintf_s(msgs, "%f", sendString);
-
-                        line = "\nYoke X pos = " + (std::to_string(pS->datum[count].value)) +" / " + msgs;
-                        OutputDebugStringA(line.c_str());
-                        arduino->writeSerialPort(msgs, DATA_LENGTH);*/
+                         arduino->writeSerialPort(_strdup(valueFormatted.c_str()), DATA_LENGTH);
                         break;
 
                     case DATA_VERTICAL_SPEED:
