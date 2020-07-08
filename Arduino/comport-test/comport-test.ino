@@ -14,12 +14,16 @@
 int driverPUL = 8;    // PUL- pin
 int driverDIR = 9;    // DIR- pin
 
+int driverPUL2 = 10;    // PUL- pin
+int driverDIR2 = 11;    // DIR- pin
+
 const int LED_PIN = 13;
 const int TQ_PIN = 12;
 const int vlt = 2;
 
 // Define a stepper and the pins it will use
 AccelStepper stepper(1, driverPUL, driverDIR); // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
+AccelStepper stepper2(1, driverPUL2, driverDIR2); // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
 
 int speedval = 400.3453;
 
@@ -45,7 +49,12 @@ void setup() {
   // Change these to suit your stepper if you want
   stepper.setMaxSpeed(5200);
   stepper.setAcceleration(5000);
-  //stepper.moveTo(-1000);
+
+  stepper2.setMaxSpeed(5200);
+  stepper2.setAcceleration(5000);
+  stepper.moveTo(0);
+  stepper2.moveTo(0);
+
   Serial.begin(115200);
 }
 
@@ -128,12 +137,23 @@ void showParsedData() {
   //  Serial.print("Float ");
   //  Serial.println(floatFromPC);
 
-  stepper.moveTo(floatFromPC);
+  if (strcmp(messageFromPC, "X_POS") == 0) {
+    stepper.moveTo(floatFromPC);
+  }
+
+  if (strcmp(messageFromPC, "Y_POS") == 0) {
+    stepper2.moveTo(floatFromPC);
+  }
 
   //Serial.println("disttogo");
   while (stepper.distanceToGo() != 0) {
     //    Serial.println(stepper.distanceToGo());
     stepper.run();
+  }
+
+  while (stepper2.distanceToGo() != 0) {
+    //    Serial.println(stepper2.distanceToGo());
+    stepper2.run();
   }
 
 }

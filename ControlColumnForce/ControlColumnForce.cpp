@@ -155,13 +155,12 @@ void CALLBACK MyDispatchProcPDR(SIMCONNECT_RECV* pData, DWORD cbData, void* pCon
                 // in the StructDatum structure. The actual number returned will
                 // be held in the dwDefineCount parameter.
 
-                float simVal = 0;
+                float simValX = 0;
+                float simValY = 0;
                 char msgs[2000];
                 std::string line = "";
-                std::string valueFormatted = "";
-
-                /*line = "--> Checking data";
-                OutputDebugStringA(line.c_str());*/
+                std::string valueFormattedX = "";
+                std::string valueFormattedY = "";
 
 
                 while (count < (int)pObjData->dwDefineCount)
@@ -172,20 +171,24 @@ void CALLBACK MyDispatchProcPDR(SIMCONNECT_RECV* pData, DWORD cbData, void* pCon
                         printf("\nAileron pos = %f", pS->datum[count].value);
                         break;
 
+                     // Pitch
                     case DATA_YOKE_Y_POSITION:
-                      //  sendString = pS->datum[count].value > 0 ? "300" : "50";
-                       // line = "\nYoke Y pos = " + (std::to_string(pS->datum[count].value)) + " | ss: " + sendString;
-                        //OutputDebugStringA(line.c_str());
-                        // arduino->writeSerialPort(sendString, DATA_LENGTH);
-                        break;
+                        simValY = (pS->datum[count].value * 3000) +  500;
+                        valueFormattedY = "<Y_POS, 0, " + std::to_string(simValY) + ">";
+                        line = "\nYoke y pos = " + (std::to_string(pS->datum[count].value)) + " " + valueFormattedY;
+                        OutputDebugStringA(line.c_str());
 
+                        arduino->writeSerialPort(_strdup(valueFormattedY.c_str()), DATA_LENGTH);
+
+                        break;
+                    // Roll
                     case DATA_YOKE_X_POSITION:
-                        simVal = pS->datum[count].value * 800;                        
-                        valueFormatted = "<X_POS, 12, " + std::to_string(simVal) + ">";
-                        line = "\nYoke X pos = " + (std::to_string(pS->datum[count].value)) + " " + valueFormatted;
+                        simValX = (pS->datum[count].value * 2000) + 500;
+                        valueFormattedY = "<X_POS, 0, " + std::to_string(simValX) + ">";
+                        line = "\nYoke X pos = " + (std::to_string(pS->datum[count].value)) + " " + valueFormattedY;
                         OutputDebugStringA(line.c_str());
                         
-                         arduino->writeSerialPort(_strdup(valueFormatted.c_str()), DATA_LENGTH);
+                        arduino->writeSerialPort(_strdup(valueFormattedY.c_str()), DATA_LENGTH);
                         break;
 
                     case DATA_VERTICAL_SPEED:
