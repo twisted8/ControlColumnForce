@@ -173,7 +173,7 @@ void CALLBACK MyDispatchProcPDR(SIMCONNECT_RECV* pData, DWORD cbData, void* pCon
 
                      // Pitch
                     case DATA_YOKE_Y_POSITION:
-                        simValY = (pS->datum[count].value * 3000) +  500;
+                        simValY = (pS->datum[count].value * 6000) +  500;
                         valueFormattedY = "<Y_POS, 0, " + std::to_string(simValY) + ">";
                         line = "\nYoke y pos = " + (std::to_string(pS->datum[count].value)) + " " + valueFormattedY;
                         OutputDebugStringA(line.c_str());
@@ -183,7 +183,7 @@ void CALLBACK MyDispatchProcPDR(SIMCONNECT_RECV* pData, DWORD cbData, void* pCon
                         break;
                     // Roll
                     case DATA_YOKE_X_POSITION:
-                        simValX = (pS->datum[count].value * 2000) + 500;
+                        simValX = (pS->datum[count].value * 5000) + 500;
                         valueFormattedY = "<X_POS, 0, " + std::to_string(simValX) + ">";
                         line = "\nYoke X pos = " + (std::to_string(pS->datum[count].value)) + " " + valueFormattedY;
                         OutputDebugStringA(line.c_str());

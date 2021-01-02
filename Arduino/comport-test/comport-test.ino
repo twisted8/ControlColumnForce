@@ -9,6 +9,7 @@
 //Pulse pin from arduino to pin 3 of driver
 //Direction pin from arduino in to pin 4 of driver.
 
+//https://www.airspayce.com/mikem/arduino/AccelStepper/index.html
 #include <AccelStepper.h>
 
 int driverPUL = 8;    // PUL- pin

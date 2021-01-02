@@ -33,3 +33,4 @@ Debug
 *.out
 *.app
 
+ControlColumnForce/x64/Release/*
