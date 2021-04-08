@@ -64,8 +64,8 @@ enum DATA_NAMES {
     DATA_PITOT_HEAT,
     DATA_AILERON_POSITION,
     DATA_YOKE_X_POSITION,
-    DATA_YOKE_Y_POSITION
-
+    DATA_YOKE_Y_POSITION,
+    DATA_AUTOPILOT_MASTER
 };
 
 
@@ -91,18 +91,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CONTROLCOLUMNFORCE));
 
-    MSG msg;
-
     // Main message loop:
-  //  while (GetMessage(&msg, nullptr, 0, 0))
-   // {
-     //   if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-       // {
-         //   TranslateMessage(&msg);
-          //  DispatchMessage(&msg);
-       // }
-   // }
-  //  return (int) msg.wParam;
+    MSG msg;
+    while (GetMessage(&msg, NULL, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+    return (int)msg.wParam;
+
 }
 
 void CALLBACK MyDispatchProcPDR(SIMCONNECT_RECV* pData, DWORD cbData, void* pContext)
@@ -196,8 +194,18 @@ void CALLBACK MyDispatchProcPDR(SIMCONNECT_RECV* pData, DWORD cbData, void* pCon
                         break;
 
                     case DATA_PITOT_HEAT:
-                        printf("\nPitot heat = %f", pS->datum[count].value);
+                        //printf("\nPitot heat = %f", pS->datum[count].value);
+                        line = "\nPITO= " + (std::to_string(pS->datum[count].value));
+                        OutputDebugStringA(line.c_str());
+
                         break;
+
+                    case DATA_AUTOPILOT_MASTER: {
+                       // printf("\nAutopilot heading lock = %f", pS->datum[count].value);
+                        line = "\nAutopilot heading= " + (std::to_string(pS->datum[count].value));
+                        OutputDebugStringA(line.c_str());
+                        break;
+                    }
 
                     default:
                         printf("\nUnknown datum ID: %d", pS->datum[count].id);
@@ -224,7 +232,7 @@ void CALLBACK MyDispatchProcPDR(SIMCONNECT_RECV* pData, DWORD cbData, void* pCon
         }
 
         default:
-            printf("\Unknown dwID: %d", pData->dwID);
+            printf("\nUnknown dwID: %d", pData->dwID);
             break;
         
     }
@@ -261,6 +269,11 @@ void testTaggedDataRequest()
 
         hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_PDR, "Pitot Heat", "Bool",
             SIMCONNECT_DATATYPE_FLOAT32, 0, DATA_PITOT_HEAT);
+
+        hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_PDR, "Autopilot Master", "Bool",
+            SIMCONNECT_DATATYPE_FLOAT32, 0, DATA_AUTOPILOT_MASTER);
+
+        
 
         // Request a simulation start event
         hr = SimConnect_SubscribeToSystemEvent(hSimConnect, EVENT_SIM_START, "SimStart");
@@ -317,7 +330,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+      CW_USEDEFAULT, CW_USEDEFAULT, 500, 300, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -374,12 +387,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                 TextOut(hdc,
                   25, 25,
-                   _T("CONNECTED Prepar3D"), _tcslen(_T("CONNECTED Prepar3D")));
-           }
+                   _T("Prepar3D: CONNECTED"), _tcslen(_T("Prepar3D: CONNECTED")));
+            }
+            else
+            {
+
+                TextOut(hdc,
+                    25, 25,
+                    _T("Prepar3D: Not Running"), _tcslen(_T("Prepar3D: Not Running")));
+            }
 
             printf("Welcome to the serial test app!\n\n");
 
-            TCHAR greeting[] = _T("Connected to Arduino");
+            TCHAR arduinoStatus[] = _T("Arduino Board: Connected");
             const char* sendString = "20";
 
             if (arduino->isConnected())
@@ -388,8 +408,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 bool hasWritten = arduino->writeSerialPort(sendString, DATA_LENGTH);
 
                 TextOut(hdc,
-                    5, 5,
-                    greeting, _tcslen(greeting));
+                    25, 50,
+                    arduinoStatus, _tcslen(arduinoStatus));
             }
               
             testTaggedDataRequest();
